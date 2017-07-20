@@ -121,6 +121,9 @@ if __name__ == "__main__":
    # csv file or the single location as specified
    # by a lat/lon tuple
    for loc in locations.itertuples():
+      
+      # some feedback
+      print("processing: " + loc[1]) 
     
       # setup the geometry, based upon point locations as specified
       # in the locations file or provided by a latitude or longitude
