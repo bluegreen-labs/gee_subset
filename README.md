@@ -1,4 +1,4 @@
-# google_earth_engine_subsets
+# google_earth_engine_subset
 
 A small python script to subset GEE gridded data products.
 
@@ -21,11 +21,11 @@ Make sure you have a working Google Earth Engine python API setup. The installat
 Below you find an example call to the scrip which downloads MODIS MYD09Q1 (-p, --product) reflectance data for bands 1 and 2 (-b, --band) for a number of sites as listed in selected_sites.csv and saves the results on the users desktop (-d, --directory).
 
 ```bash
-./gee_subsets.py -p "MODIS/MYD09Q1" -b "sur_refl_b01" "sur_refl_b02" -f "~/Desktop/selected_sites.csv" -d "/Users/foo/Desktop/"
+./gee_subset.py -p "MODIS/MYD09Q1" -b "sur_refl_b01" "sur_refl_b02" -f "~/Desktop/selected_sites.csv" -d "/Users/foo/Desktop/"
 ```
 
 ``` bash
-./gee_subsets.py -p "LANDSAT/LC08/C01/T1" -b "B1" "B2" -s "2015-01-01" -e "2015-12-31" -loc 44.064665 -71.287575
+./gee_subset.py -p "LANDSAT/LC08/C01/T1" -b "B1" "B2" -s "2015-01-01" -e "2015-12-31" -loc 44.064665 -71.287575
 ```
 
 Sites can be listed as a latitude longitude tuple using the -loc parameter, or by providing the before mentioned csv file (-f, --file parameter). Either one should be provided.
@@ -34,12 +34,20 @@ The csv file is a comma delimited file of the format:
 
 	site, latitude, longitude.
 
-A radius can be provided (-r, --radius) around which one can download a rectangular window of data (I know... but for simplicity this is called a radius).
+A padding can be provided (-pd, --pad) so one can download a rectangular window of data padded x km in either direction around a particular location. This option is limited by the maximum pixels which GEE can export. For normal use (i.e. 1 to 2 km padding) this should not present a problem for most products.
 
 General help can be queried by calling:
 ```bash
-./gee_subsets.py -h
+./gee_subset.py -h
 ```
+
+In addition the script can be loaded as a package in a python script by calling:
+
+```python
+import gee_subset
+```
+The function is called gee_subset(). Consult the script for correct parameter naming conventions. Currently minimum error trapping is provided.
+
 
 ## Data format
 

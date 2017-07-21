@@ -146,6 +146,7 @@ def gee_subset(product = None,
    df.time = df.time / 1000
    df['time'] = pd.to_datetime(df['time'], unit = 's')
    df.rename(columns = {'time': 'date'}, inplace = True)
+   df.sort_values(by = 'date')
    
    # add the product name and latitude, longitude as a column
    # just to make sense of the returned data after the fact
@@ -204,6 +205,6 @@ if __name__ == "__main__":
         # depending on output options write to file
         # or just print to console   
         if args.directory:
-          df.to_csv(args.directory + loc[1] + "_gee_subset.csv")
+          df.to_csv(args.directory + "/" + loc[1] + "_gee_subset.csv")
         else:
           print(df)
