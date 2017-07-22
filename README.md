@@ -18,18 +18,18 @@ Below you find an example call to the scrip which downloads MODIS MYD09Q1 (-p, -
 
 ```bash
 ./gee_subset.py -p "MODIS/MYD09Q1" \
-				   -b "sur_refl_b01" "sur_refl_b02" \
-				   -f "~/Desktop/selected_sites.csv" \
-				   -d "/Users/foo/Desktop/"
+                -b "sur_refl_b01" "sur_refl_b02" \
+                -f "~/Desktop/selected_sites.csv" \
+                -d "/Users/foo/Desktop/"
 ```
 
 ``` bash
 # prints output to console
 ./gee_subset.py -p "LANDSAT/LC08/C01/T1" \
-				   -b "B1" "B2" \
-				   -s "2015-01-01" \
-				   -e "2015-12-31" \
-				   -l 44.064665 -71.287575
+                -b "B1" "B2" \
+                -s "2015-01-01" \
+                -e "2015-12-31" \
+                -l 44.064665 -71.287575
 ```
 
 Sites can be listed as a latitude longitude tuple using the -loc parameter, or by providing the before mentioned csv file (-f, --file parameter). Either one should be provided.
