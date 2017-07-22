@@ -36,7 +36,7 @@ directory = tempdir()
 # make the gee_subset.py python call
 # time the duration of the call for reporting
 start = Sys.time()
-system(sprintf("%s %s/gee_subset.py -p %s -b %s -s %s -e %s -l %s -d %s",
+system(sprintf("%s %s/gee_subset.py -p %s -b %s -s %s -e %s -l %s -d %s -sc 30",
                python_path,
                path,
                product,

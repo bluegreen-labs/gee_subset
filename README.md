@@ -1,10 +1,6 @@
-# google_earth_engine_subset
+# Google Earth Engine subset script & library
 
-A small python script to subset GEE gridded data products.
-
-This script should make it easier to subset remote sensing time series for processing external to GEE. This in parts replaces the ORNL DAAC MODIS subsets, but extends it to higher resolution date such as Landsat and Sentinel.
-
-More so, it should also work on all other gridded products using the same product / band syntax.
+This is a small python script to subset GEE gridded data products. This script should make it easier to subset remote sensing time series for processing external to GEE. This in parts replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax.
 
 ## Installation
 
@@ -21,11 +17,19 @@ Make sure you have a working Google Earth Engine python API setup. The installat
 Below you find an example call to the scrip which downloads MODIS MYD09Q1 (-p, --product) reflectance data for bands 1 and 2 (-b, --band) for a number of sites as listed in selected_sites.csv and saves the results on the users desktop (-d, --directory).
 
 ```bash
-./gee_subset.py -p "MODIS/MYD09Q1" -b "sur_refl_b01" "sur_refl_b02" -f "~/Desktop/selected_sites.csv" -d "/Users/foo/Desktop/"
+./gee_subset.py -p "MODIS/MYD09Q1" \
+				   -b "sur_refl_b01" "sur_refl_b02" \
+				   -f "~/Desktop/selected_sites.csv" \
+				   -d "/Users/foo/Desktop/"
 ```
 
 ``` bash
-./gee_subset.py -p "LANDSAT/LC08/C01/T1" -b "B1" "B2" -s "2015-01-01" -e "2015-12-31" -loc 44.064665 -71.287575
+# prints output to console
+./gee_subset.py -p "LANDSAT/LC08/C01/T1" \
+				   -b "B1" "B2" \
+				   -s "2015-01-01" \
+				   -e "2015-12-31" \
+				   -l 44.064665 -71.287575
 ```
 
 Sites can be listed as a latitude longitude tuple using the -loc parameter, or by providing the before mentioned csv file (-f, --file parameter). Either one should be provided.
@@ -41,14 +45,23 @@ General help can be queried by calling:
 ./gee_subset.py -h
 ```
 
-In addition the script can be loaded as a package in a python script by calling:
+In addition the script can be loaded as a library in a python script by calling:
 
 ```python
 import gee_subset
 ```
 The function is called gee_subset(). Consult the script for correct parameter naming conventions. Currently minimum error trapping is provided.
 
-
 ## Data format
 
-The output of the script is tidy data which each row an observation. Multiple observations can be returned in case radius is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. These multiple bands will be returned as columns in the tidy data format.
+The output of the script is tidy data in which each row is an observation. Multiple observations can be returned in case radius is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. Multiple bands will be returned as columns in the tidy data format.
+
+## Demo code
+
+An example query, calling the python script from R, downloads two years (~100 data points) of Landsat 8 Tier 1 data for two bands (red, NIR) in ~8 seconds flat. Querying for a larger footprint (1x1 km footprint) only creates a small overhead (13 sec. query). The resulting figure for the point location with the derived NDVI values is shown below. The demo script to recreate this figure is included in the example folder of the github repository.
+
+![](https://github.com/khufkens/gee_subset/raw/master/examples/demo_vis.png)
+
+## Acknowledgements
+
+Please reference the package as:
