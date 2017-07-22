@@ -60,7 +60,7 @@ The output of the script is tidy data in which each row is an observation. Multi
 
 An example query, calling the python script from R, downloads two years (~100 data points) of Landsat 8 Tier 1 data for two bands (red, NIR) in ~8 seconds flat. Querying for a larger footprint (1x1 km footprint) only creates a small overhead (13 sec. query). The resulting figure for the point location with the derived NDVI values is shown below. The demo script to recreate this figure is included in the examples folder of the github repository.
 
-![](https://github.com/khufkens/gee_subset/raw/master/examples/demo_vis.png?raw=true)
+![](examples/demo_vis.png?raw=true)
 
 ## Citation
 
