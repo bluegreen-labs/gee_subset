@@ -62,7 +62,7 @@ An example query, calling the python script from R, downloads two years (~100 da
 
 ![](examples/demo_vis.png?raw=true)
 
-## Citation
+## References
 
 If you use this code in your research please refer to it using the following Zenodo citation and DOI.
 
