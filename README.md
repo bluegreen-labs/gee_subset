@@ -2,7 +2,7 @@
 
 This is a small python script to subset GEE gridded data products into a time series for a given location or list of locations. This script should make it easier to subset remote sensing time series for processing external to GEE. 
 
-This in parts replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax.
+This in parts replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax. If you use this code made your life easier please refer to it using the Zenodo citation and DOI (see below / medallion) in any research papers.
 
 ## Installation
 
@@ -66,5 +66,5 @@ An example query, calling the python script from R, downloads two years (~100 da
 
 ## References
 
-If you use this code in your research please refer to it using the following Zenodo citation and DOI.
+
 
