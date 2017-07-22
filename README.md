@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/97874563.svg)](https://zenodo.org/badge/latestdoi/97874563)
+
 # Google Earth Engine subset script & library
 
 This is a small python script to subset GEE gridded data products into time series for a given location or list of locations. This script should make it easier to subset remote sensing time series for processing external to GEE. 
@@ -66,5 +68,4 @@ An example query, calling the python script from R, downloads two years (~100 da
 
 ## References
 
-...
-
+Hufkens K. (2017) A Google Earth Engine time series subset script & library. DOI: 10.5281/zenodo.833789.
