@@ -4,7 +4,7 @@
 
 This is a small python script to subset GEE gridded data products into time series for a given location or list of locations. This script should make it easier to subset remote sensing time series for processing external to GEE. 
 
-This in parts replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax. If you use this code made your life easier please refer to it using the Zenodo citation and DOI (see below / medallion) in any research papers.
+This in part replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax (e.g. the MODIS phenology product MCD12Q2 or the MODIS snow product MOD10A1). If this code made your life easier please refer to it using the Zenodo citation and DOI (see below / medallion) in any research papers.
 
 ## Installation
 
@@ -42,7 +42,7 @@ The csv file is a comma delimited file of the format:
 
 	site, latitude, longitude.
 
-A padding can be provided (-pd, --pad) so one can download a rectangular window of data padded x km in either direction around a particular location. This option is limited by the maximum pixels which GEE can export. For normal use (i.e. 1 to 2 km padding) this should not present a problem for most products.
+A padding value can be provided (-pd, --pad) so one can download a rectangular window of data padded x km in either direction around a particular location. This option is limited by the maximum pixels which GEE can export. For normal use (i.e. 1 to 2 km padding) this should not present a problem for most products.
 
 General help can be queried by calling:
 ```bash
@@ -58,7 +58,7 @@ The function is called gee_subset(). Consult the script for correct parameter na
 
 ## Data format
 
-The output of the script is tidy data in which each row is an observation. Multiple observations can be returned in case radius is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. Multiple bands will be returned as columns in the tidy data format.
+The output of the script is [tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) in which each row is an observation. Multiple observations can be returned in case a padding value is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. Multiple bands will be returned as columns in the tidy data format.
 
 ## Demo code
 
