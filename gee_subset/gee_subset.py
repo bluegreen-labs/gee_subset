@@ -205,6 +205,6 @@ if __name__ == "__main__":
         # depending on output options write to file
         # or just print to console   
         if args.directory:
-          df.to_csv(args.directory + "/" + loc[1] + "_gee_subset.csv", index = False)
+          df.to_csv(args.directory + "/" + loc[1] + "_" + os.path.basename(args.product) + "_gee_subset.csv", index = False)
         else:
           print(df)
