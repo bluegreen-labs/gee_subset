@@ -50,7 +50,7 @@ end = Sys.time()
 proc_time = as.vector(end - start)
 
 # read in the data stored in the temporary directory
-df = read.table(sprintf("%s/site_gee_subset.csv", directory), sep = ",", header = TRUE)
+df = read.table( paste0( directory, "site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE )
 
 # calculate the NDVI and convert date format
 df$ndvi = (df$B5 - df$B4)/(df$B5 + df$B4)
