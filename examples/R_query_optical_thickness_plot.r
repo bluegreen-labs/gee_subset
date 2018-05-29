@@ -26,13 +26,16 @@ path = "~/google_earth_engine_subsets/gee_subset/"
 # product name, band(s) to query, start and end date of the range
 # and the lcoation
 product = "MODIS/006/MOD08_M3"
-band = "Cloud_Optical_Thickness_Liquid_Log_Mean_Mean"
-start_date = "2014-01-01"
-end_date = "2017-12-31"
-location = "44.064665 -71.287575"
+band = "Cloud_Optical_Thickness_Liquid_Log_Mean_Mean Cloud_Fraction_Day_Mean_Mean"
+start_date = "2000-01-01"
+end_date = "2018-12-31"
+location = "-0.2 11.6"
 
 # store output in the R temporary directory
 directory = tempdir()
+out_file = paste0( directory, "/site_",
+                   tail( unlist( strsplit( product, "[/]" ) ), n=1 ),
+                   "_gee_subset.csv" )
 
 # make the gee_subset.py python call
 # time the duration of the call for reporting
@@ -51,18 +54,37 @@ end = Sys.time()
 proc_time = as.vector(end - start)
 
 # read in the data stored in the temporary directory
-df = read.table( paste0( directory, "/site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE )
+df = read.table(out_file, sep = ",", header = TRUE )
 
-# apply multiplier the cloud cover value, less long
-df$cloud_cover = df$Cloud_Optical_Thickness_Liquid_Log_Mean_Mean * 0.001
+# apply multiplier the cloud cover value, convert dates
+df$cloud_thickness = df$Cloud_Optical_Thickness_Liquid_Log_Mean_Mean * 0.001
+df$cloud_cover = df$Cloud_Fraction_Day_Mean_Mean * 0.0001
 df$date = as.Date(df$date)
 
+# convert to long format
+df = df %>% gather(band, value, cloud_thickness, cloud_cover)
+
+# write to file
+write.table(df, "~/lope_cloud_data.csv",
+            col.names = TRUE,
+            row.names = FALSE,
+            quote = FALSE,
+            sep = ",")
+
 # plot nicely with ggplot, inlcuding smoothed fit
-p = ggplot(df, aes(date,cloud_cover)) +
+p = ggplot(df, aes(date,value)) +
   xlab("") +
-  ylab("Optical Thickness") +
-  geom_smooth(span = 0.3, colour = "black") +
+  ylab("Fractional Cover") +
+  geom_smooth(span = 0.03, colour = "black") +
   geom_point() +
   ggtitle(sprintf("Cloud cover - processed in %s sec.",
-                  round(proc_time,2)))
+                  round(proc_time,2))) +
+  facet_wrap( ~ band, nrow = 2, scales = "free")
+
+# save graph
+png("~/lope_cloud_cover.png", 1800, 1200)
 plot(p)
+dev.off()
+
+# remove downloaded file
+file.remove(out_file)
