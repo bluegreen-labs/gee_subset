@@ -163,7 +163,7 @@ def gee_subset(product = None,
        select(tuple(bands)).\
        filterDate(start_date, end_date)
    
-   # image export options
+   # image export options (non functioning for now)
    if image and pad > 0:
      
      def ExportCol(col, folder, scale, region):
@@ -173,12 +173,13 @@ def gee_subset(product = None,
       n = colList.size().getInfo()
       print(n)
       
-
       for i in range(0, n):
       	print(colList.get(i))
         img = ee.Image(colList.get(i))
         
         id = img.id().getInfo()
+
+        print(id)
         ee.batch.Export.image.toDrive(
          image = img,
          fileNamePrefix = id,

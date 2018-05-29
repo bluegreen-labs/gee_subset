@@ -8,7 +8,7 @@
 library(ggplot2)
 
 # change this depending on system settings
-python_path = "/usr/local/bin/python/"
+python_path = "/usr/local/bin/python"
 
 # clone the gee_subset project
 # relies on git being installed
@@ -50,7 +50,7 @@ end = Sys.time()
 proc_time = as.vector(end - start)
 
 # read in the data stored in the temporary directory
-df = read.table( paste0( directory, "site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE )
+df = read.table( paste0( directory, "/site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE )
 
 # calculate the NDVI and convert date format
 df$ndvi = (df$B5 - df$B4)/(df$B5 + df$B4)
