@@ -8,8 +8,7 @@
 library(ggplot2)
 
 # change this depending on system settings
-#python_path = "/usr/bin/env python" # on linux
-python_path = "/usr/local/bin/python" # on OSX
+python_path = "/usr/bin/env python"
 
 # clone the gee_subset project
 # relies on git being installed
