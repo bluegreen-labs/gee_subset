@@ -14,11 +14,10 @@
 # product / band syntax.
 
 # load required libraries
-import os, argparse
+import os, argparse, re
 from datetime import datetime
 import pandas as pd
 import ee
-import re
 
 # parse arguments in a beautiful way
 # includes automatic help generation
@@ -40,14 +39,14 @@ def getArgs():
                        
    parser.add_argument('-b',
                        '--bands',
-                       help = 'band name(s) for the requested product, or polarisation (SAR data)',
+                       help = 'band name(s) for the requested product',
                        nargs = "+",
                        required = True)
 
    parser.add_argument('-o',
                        '--orbit',
                        help = 'orbit properties (either ASCENDING or DESCENDING)',
-                       default = 'DESCENDING')
+                       default = 'ASCENDING')
 
    parser.add_argument('-in',
                        '--instrument',
@@ -83,7 +82,7 @@ def getArgs():
                        nargs = 2,
                        help = '''geographic location as latitude longitude
                        provided as -loc latitude longitude''',
-                       default = '0 0',
+                       default = 0,
                        type = float)
 
    parser.add_argument('-f',
@@ -96,34 +95,60 @@ def getArgs():
                        '--directory',
                        help = '''directory / path where to write output when not
                        provided this defaults to output to the console''',
-                       default = '~')  
+                       default = 0)  
                                         
    parser.add_argument('-v',
                        '--verbose',
                        help = '''verbose debugging''',
                        default = False)
-   
+
    parser.add_argument('-i',
                        '--image',
                        help = '''export images''',
                        default = False)
-                       
+
    # put arguments in dictionary with
    # keys being the argument names given above
    return parser.parse_args()
 
+# export collection to individual images
+def ExportCol(col, folder, scale, region):
+   
+   print("Exporting data...")
+   
+   # get collection info
+   colList = col.toList(col.size())
+   n = colList.size().getInfo()
+  
+   # loop over all collection images
+   # and export
+   for i in range(0, n):
+	img = ee.Image(colList.get(i))
+	id = img.id().getInfo()
+	print(id)
+	ee.batch.Export.image.toDrive(
+	 image = img,
+	 fileNamePrefix = id,
+	 folder = folder,
+	 description = id,
+	 scale = scale,
+	 crs = 'EPSG:4326',
+	 region = region.getInfo()["coordinates"],
+	 maxPixels = 1e13,
+	 skipEmptyTiles = True).start()
+
 # GEE subset subroutine 
 def gee_subset(product = None,
               bands = None,
+              instrument = None,
+              orbit = None,
               start_date = None,
               end_date = None,
               latitude = None,
               longitude = None,
               scale = None,
               pad = 0,
-	      orbit = None,
-	      instrument = None,
-              image = False):
+              image = None):
 
    # fix the geometry when there is a radius
    # 0.01 degree = 1.1132 km on equator
@@ -139,11 +164,10 @@ def gee_subset(product = None,
    if pad:
      geometry = ee.Geometry.Rectangle(
        [longitude - pad, latitude - pad,
-        longitude + pad, latitude + pad])
+       longitude + pad, latitude + pad])
    else:
      geometry = ee.Geometry.Point([longitude, latitude])
-
-
+   
    # Allow for limited SAR radar product support
    if re.search("S1_GRD", product):
 
@@ -151,53 +175,31 @@ def gee_subset(product = None,
      sar_band = ''.join(bands)
 
      col = ee.ImageCollection('COPERNICUS/S1_GRD').\
-       filter(ee.Filter.listContains('transmitterReceiverPolarisation', sar_band )).\
+       filter(ee.Filter.listContains('transmitterReceiverPolarisation', sar_band)).\
        filter(ee.Filter.eq('instrumentMode', instrument)).select(bands).\
        filter(ee.Filter.eq('resolution_meters', 10)).\
        filter(ee.Filter.eq('orbitProperties_pass', orbit)).\
        filterDate(start_date, end_date).filterBounds(geometry)
-
    else:
-     # define the collection from which to sample
      col = ee.ImageCollection(product).\
        select(tuple(bands)).\
        filterDate(start_date, end_date)
    
    # image export options (non functioning for now)
    if image and pad > 0:
-     
-     def ExportCol(col, folder, scale, region):
-      nimg = 5
-      maxPixels = 1e13
-      colList = col.toList(nimg)
-      n = colList.size().getInfo()
-      print(n)
-      
-      for i in range(0, n):
-      	print(colList.get(i))
-        img = ee.Image(colList.get(i))
-        
-        id = img.id().getInfo()
-
-        print(id)
-        ee.batch.Export.image.toDrive(
-         image = img,
-         fileNamePrefix = id,
-         folder = folder,
-         description = id,
-         scale = scale,
-         crs = 'EPSG:4326',
-         region = region.getInfo()["coordinates"],
-         maxPixels = maxPixels,
-         skipEmptyTiles = True).start()
-     
-     ExportCol(col, "test", scale, geometry)
-     
-     return "Please Check your Google Drive"
-     
+     ExportCol(col, "gee_subset", scale, geometry)
+     return "Check your Google Drive..."
+   
    # region values as generated by getRegion
-   region = col.getRegion(geometry, int(scale)).getInfo()
- 
+   # error trap deals with cases of a single band
+   # being queried
+   try:
+     region = col.getRegion(geometry, int(scale)).getInfo()
+   except:
+     print("not a collection")
+     region = ee.ImageCollection(ee.Image(product)).\
+      getRegion(geometry, int(scale)).getInfo()
+    
    # stuff the values in a dataframe for convenience      
    df = pd.DataFrame.from_records(region[1:len(region)])
     
@@ -250,31 +252,31 @@ if __name__ == "__main__":
    for loc in locations.itertuples():
       
       # some feedback
-      print("processing: " + loc[1] + " at " + "%s / %s" % (loc[2],loc[3]))
+      print("processing: " + loc[1] + " at " + "%s / %s" % (loc[3],loc[2]))
       
       # download data using the gee_subset routine
       # print to console if verbose
       try:
         df = gee_subset(product = args.product,
                        bands = args.bands,
+                       instrument = args.instrument,
+                       orbit = args.orbit,
                        start_date = args.start,
                        end_date = args.end,
                        latitude = loc[2],
                        longitude = loc[3],
                        scale = args.scale,
                        pad = args.pad,
-		       orbit = args.orbit,
-		       instrument = args.instrument,
                        image = args.image)
       except NameError:
         print("Error: check input parameters")
         if args.verbose:
           raise
       else:
-      
+        
         # depending on output options write to file
         # or just print to console   
-        if args.directory:
+        if args.directory and not args.image:
           df.to_csv(args.directory + "/" + loc[1] + "_" + os.path.basename(args.product) + "_gee_subset.csv", index = False)
         else:
           print(df)
