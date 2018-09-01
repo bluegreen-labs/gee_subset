@@ -7,114 +7,132 @@
 # load libraries
 library(ggplot2)
 library(ggthemes)
+library(raster)
+library(googledrive) # make sure to authenticate first
 
 # change this depending on system settings
-python_path = "/usr/bin/python"
+python_path <- "/usr/bin/python"
+path <- tempdir()
+setwd(path)
+system("git clone https://github.com/khufkens/gee_subset.git")
 
-# clone the gee_subset project
-# relies on git being installed
-# and will work out of the box for most
-# on OSX or Linux.
-#
-# basic gee_subset requirements apply
-# mainly, having a working GEE python API install
-
-library(tidyverse)
-
-# read in IFPRI site locations
-ifpri = readRDS("~/Dropbox/Research_Projects/IFPRI/manuscripts/remote_sensing_comparison/data/cropmonitor_subset.rds")
-
-locations = ifpri %>%
-  group_by(userfield) %>%
-  summarise(lat = mean(latitude),
-            lon = mean(longitude),
-            site = unique(userfield),
-            date = ifelse(any(first_lodging == "Yes"),
-                          date[which(first_lodging == "Yes")],
-                          NA)
-            )
-locations$date = as.Date(locations$date, origin = "1970-01-01")
-locations = locations[!is.na(locations$date),]
-
-setwd("~")
-path = "~/Dropbox/Research_Projects/code_repository/bitbucket/gee_subset/gee_subset/"
+# WARNING: removes the gee_subset folder
+try(drive_rm("gee_subset"))
 
 # set product parameters, such as
 # product name, band(s) to query, start and end date of the range
 # and the lcoation
-product = "COPERNICUS/S1_GRD"
-bands = c("VH","VV")
-start_date = "2016-10-15"
-end_date = "2017-05-15"
+product <- "COPERNICUS/S1_GRD"
+bands <- c("VV")
+start_date <- "2016-10-15"
+end_date <- "2017-05-15"
+location <- "48.819541 3.009227"
 
-# store output in the R temporary directory
-directory = tempdir()
-
-output = do.call("rbind", apply(locations, 1, function(location){
-  
-  data = lapply(bands, function(band){
-  
-    # make the gee_subset.py python call
-    # time the duration of the call for reporting
-    catch_error = try(system(sprintf("%s %s/gee_subset.py -p %s -b %s -s %s -e %s -l %s -d %s -sc 5",
+# make the gee_subset.py python call
+# time the duration of the call for reporting
+catch_error = try(system(sprintf("%s %s/gee_subset/gee_subset/gee_subset.py -p %s -b %s -s %s -e %s -l %s -i True",
                    python_path,
                    path,
                    product,
                    band,
                    start_date,
                    end_date,
-                   paste(location[2:3], collapse = " "),
-                   directory
+                   location
                    ), wait = TRUE))
+
+# sleep for a minute to generate the data
+# might be longer for other examples, in this
+# case the below drive_ls() query can be put
+# in a while loop
+Sys.sleep(60)
+
+# list files downloaded to your google drive
+files <- drive_ls("gee_subset")
+
+apply(files, 1, function(file){
+  drive_download(file = file$name)
+})
+
+# load data
+s <- stack(list.files(getwd(),"*.tif", full.names = TRUE))
+
+# animate stack
+plot_map <- function(r){
+
+  theme_map <- function(...) {
+    theme_minimal() +
+      ggplot2::theme(
+        text = ggplot2::element_text(family = "Arial",
+                                     color = "#22211d",
+                                     size = 18),
+        axis.line = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_blank(),
+        axis.ticks = ggplot2::element_blank(),
+        axis.title.x = ggplot2::element_blank(),
+        axis.title.y = ggplot2::element_blank(),
+        panel.grid.major = ggplot2::element_line(color = "#ebebe5", size = 0.2),
+        panel.grid.minor = ggplot2::element_blank(),
+        plot.background = ggplot2::element_rect(fill = "#f5f5f2", color = NA),
+        panel.background = ggplot2::element_rect(fill = "#f5f5f2", color = NA),
+        legend.background = ggplot2::element_rect(fill = "#f5f5f2", color = NA),
+        panel.border = ggplot2::element_blank(),
+        ...
+      )
+  }
     
-    # read in the data stored in the temporary directory
-    filename = paste0( directory,
-                       "/site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ),
-                       "_gee_subset.csv" )
-    
-    df = try(read.table(filename ,
-                        sep = ",",
-                        header = TRUE, 
-                        stringsAsFactors = FALSE))
-    
-    if (inherits(df, "try-error")){
-      print(sprintf("error for: %s", location))
-      return(NULL)
-    }
-    
-    # translate date
-    df$date = as.Date(df$date,"%Y-%m-%d %H:%M:%S")
-    
-    # remove temporary data not to cause conflicts
-    file.remove(filename)
-    
-    # return data frame
-    return(df)
+  raster_to_df <- function(r){
+    r <- as.data.frame(as(r, "SpatialPixelsDataFrame"))
+    colnames(r) <- c("value", "x", "y")
+    return(r)
+  }
+  
+  # define a colour palette to be used, spectral sucks but is the only
+  # thing that can represent these highly non linear data well (even after
+  # a sqrt transform)
+  myPalette <- grDevices::colorRampPalette(
+    rev(RColorBrewer::brewer.pal(11, "Spectral")))
+  
+  ggplot() +  
+    geom_tile(data=raster_to_df(r), aes(x=x, y=y, fill=value)) +
+    theme_map() +
+    ggplot2::coord_equal() +
+    ggplot2::labs(x = NULL,
+                  y = NULL,
+                  title = "Flooding in the Paris region 2016",
+                  subtitle = "Sentinel 1 - VV polarization",
+                  caption = "graphics by @koen_hufkens") +
+    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::scale_fill_gradientn(
+      colours = myPalette(100),
+      name = "decibels (dB)",
+      limits = c(-50, 0),
+      guide = ggplot2::guide_colourbar(
+        direction = "horizontal",
+        barwidth = unit(0.5, units = "npc"),
+        keyheight = unit(2, units = "mm"),
+        keywidth = unit(50, units = "mm"),
+        title.position = 'top',
+        title.hjust = 0.5,
+        label.hjust = 1,
+        byrow = T,
+        label.position = "bottom"
+      )
+    )
+}
+
+animate_stack <- function(s){
+  lapply(names(s), function(l){
+    p <- plot_map(s[[l]])
+    plot(p)
   })
-  
-  # rename list elements
-  names(data) = bands
-  
-  # merge data
-  data = merge(data$VH, data$VV[c("date","VV")], by = "date", all.x = TRUE)
-  
-  # add site column
-  data$site = location["site"]
-  
-  # return the data
-  return(data)
-}))
+}
 
-# create plot
-gcc_facet = ggplot(data = output, aes(x = date, y = VH-VV )) + 
-  geom_line() +
-  geom_point() +
-  xlab("Date") +
-  ylab("Gcc 90") + facet_wrap(~ site, ncol = 4) +
-  theme_minimal()
+saveGIF({
+  ani.options(interval = 0.3)
+  animate_stack(s)},
+  movie.name = "~/test.gif",
+  ani.width = 600,
+  ani.height = 600)
 
-plot(gcc_facet)
 
-# save stuff for later inspection
-saveRDS(output,
-        "~/Dropbox/Research_Projects/IFPRI/data/sentinel1_radar_data_lodging_sites.rds")
