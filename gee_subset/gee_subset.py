@@ -252,7 +252,7 @@ if __name__ == "__main__":
    for loc in locations.itertuples():
       
       # some feedback
-      print("processing: " + loc[1] + " at " + "%s / %s" % (loc[3],loc[2]))
+      print("processing: " + str(loc[1]) + " at " + "%s / %s" % (loc[3],loc[2]))
       
       # download data using the gee_subset routine
       # print to console if verbose
@@ -277,6 +277,6 @@ if __name__ == "__main__":
         # depending on output options write to file
         # or just print to console   
         if args.directory and not args.image:
-          df.to_csv(args.directory + "/" + loc[1] + "_" + os.path.basename(args.product) + "_gee_subset.csv", index = False)
+          df.to_csv(args.directory + "/" + str(loc[1]) + "_" + os.path.basename(args.product) + "_gee_subset.csv", index = False)
         else:
           print(df)
