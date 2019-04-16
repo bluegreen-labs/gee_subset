@@ -249,7 +249,7 @@ if __name__ == "__main__":
    for loc in locations.itertuples():
       
       # some feedback
-      print("processing: " + str(loc[1]) + " at " + "%s / %s" % (loc[3],loc[2]))
+      print("processing: " + str(loc[1]) + " at " + "%s / %s" % (loc[2],loc[3]))
       
       # download data using the gee_subset routine
       # print to console if verbose

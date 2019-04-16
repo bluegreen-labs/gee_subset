@@ -4,21 +4,26 @@
 
 # Google Earth Engine subset script & library
 
-This is a small python script to subset GEE gridded data products into time series for a given location or list of locations. This script should make it easier to subset remote sensing time series for processing external to GEE. 
-
-This in part replaces for example the ORNL DAAC MODIS subsets or Daymet web services, but extends these to higher resolution date such as Landsat and Sentinel. More so, it should also work on all other gridded products using the same product / band syntax (e.g. the MODIS phenology product MCD12Q2 or the MODIS snow product MOD10A1). If this code made your life easier please refer to it using the Zenodo citation and DOI (see below / medallion) in any research papers.
+This is a small python script to subset GEE gridded data products into time series for a given location or list of locations. This script should make it easier to subset remote sensing time series for processing external to GEE.  If this code made your life easier please refer to it using the Zenodo citation and DOI (see below / medallion) in any research papers.
 
 ## Installation
 
-clone the repository
+Make sure you have a working Google Earth Engine python API setup. The installation instructions can be found on the [GEE developer site](https://developers.google.com/earth-engine/python_install).
+
+After this you can either install by cloning the repository: 
 
 ```bash
 git clone https://github.com/khufkens/google_earth_engine_subsets.git
 ```
+or, when integrating the script in other python code by using pypi:
 
-Make sure you have a working Google Earth Engine python API setup. The installation instructions can be found on the [GEE developer site](https://developers.google.com/earth-engine/python_install).
+```bash
+sudo pip install gee_subset
+```
 
 ## Use
+
+### command line
 
 Below you find an example call to the scrip which downloads MODIS MYD09Q1 (-p, --product) reflectance data for bands 1 and 2 (-b, --band) for a number of sites as listed in selected_sites.csv and saves the results on the users desktop (-d, --directory).
 
@@ -51,16 +56,35 @@ General help can be queried by calling:
 ./gee_subset.py -h
 ```
 
-In addition the script can be loaded as a library in a python script by calling:
+### python module
+
+In addition the script can be loaded as a library in a python script module by calling:
 
 ```python
 import gee_subset
 ```
 The function is called gee_subset(). Consult the script for correct parameter naming conventions. Currently minimum error trapping is provided.
 
+When using the python module remember that the module does not support lazy loading of dependencies. You will need the start your code with:
+
+```python
+import os, re
+from datetime import datetime
+import pandas as pd
+import ee
+from gee_subset import gee_subset
+
+# Initialize earth engine
+ee.Initialize()
+
+# your call
+gee_subset( ... )
+
+```
+
 ## Data format
 
-The output of the script is [tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) in which each row is an observation. Multiple observations can be returned in case a padding value is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. Multiple bands will be returned as columns in the tidy data format.
+The output of the script is [tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) in which each row is an observation. Multiple observations can be returned in case a padding value is specified. Multiple bands can be called at once by providing multiple valid bands as an argument. Multiple bands will be returned as columns in the tidy data format. When datasets overlap, such as is the case of sidelapped tiles in Landsat 8 data multiple values are returned for a given location or date. In this case the `id` column will inform you on the source of the data.
 
 ## Demo code
 

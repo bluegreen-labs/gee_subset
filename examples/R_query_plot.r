@@ -8,7 +8,7 @@
 library(ggplot2)
 
 # change this depending on system settings
-python_path = "/usr/bin/env python"
+python_path = "/usr/local/bin/python"
 
 # clone the gee_subset project
 # relies on git being installed
@@ -24,11 +24,11 @@ path = "~/google_earth_engine_subsets/gee_subset/"
 # set product parameters, such as
 # product name, band(s) to query, start and end date of the range
 # and the lcoation
-product = "LANDSAT/LC08/C01/T1"
-band = "B4 B5"
+product = "MODIS/006/MCD15A3H"
+band = "Lai"
 start_date = "2015-01-01"
 end_date = "2016-12-31"
-location = "44.3841666	142.31861"
+location = "44	-120"
 
 # store output in the R temporary directory
 directory = tempdir()
@@ -50,18 +50,12 @@ end = Sys.time()
 proc_time = as.vector(end - start)
 
 # read in the data stored in the temporary directory
-df = read.table( paste0( directory, "/site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE )
-
-# calculate the NDVI and convert date format
-df$ndvi = (df$B5 - df$B4)/(df$B5 + df$B4)
-df$date = as.Date(df$date)
+df = read.table( paste0( directory, "/site_", tail( unlist( strsplit( product, "[/]" ) ), n=1 ), "_gee_subset.csv" ), sep = ",", header = TRUE, stringsAsFactors = FALSE)
 
 # plot nicely with ggplot, inlcuding smoothed fit
-p = ggplot(df, aes(date,ndvi)) +
+p = ggplot(df, aes(as.Date(date), Lai)) +
   xlab("") +
   ylab("NDVI") +
-  geom_smooth(span = 0.3, colour = "black") +
-  geom_point() +
-  ggtitle(sprintf("USGS Landsat 8 Tier 1 Raw Scenes NDVI   -   processed in %s sec.",
-                  round(proc_time,2)))
+  geom_smooth(span = 0.21, colour = "black") +
+  geom_point()
 plot(p)
