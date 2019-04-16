@@ -1,8 +1,8 @@
 language: python
 
 before_install:
-  - mkdir -p .config/earthengine/
-  - echo $GEE > .config/earthengine/credentials
+  - mkdir -p ~/.config/earthengine/
+  - echo $GEE > ~/.config/earthengine/credentials
   - sudo apt-get install openssl
   - wget http://bit.ly/miniconda -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
@@ -19,4 +19,5 @@ script:
 
 env:
   global:
-  - secure: MJaIlP8lN365/1VGzdaRir3/FxmYyNHHunth82DTckeXbL0bFOZTKq+nah4PVPrSjN1uHi/rfPblcPA6AEOTIq+90I0i2cgnxDdbUWYQevWdJZprhPI+6/rDNIIoWmz7rrjIFflabF4pWuumSL7xX6avWkZX63mSe3nyOyK39cqvgo+I1FKzgxe/PF5h4HYpQ38goK8xArXlFnSGgG96WdOC1krhy8jveNUcq13f5cgQIMvc+hGBNMJZ3m8kwkyCe19tLnjDcfs4GBi0vlQm2N49yAAhge1g0EP4ErgQ8zm77yl3QZuaoyBWQpRcU5/N/Sr/bvOGZKe5xfvEhw3BfZUQo6EjjGW+DklYoO7Ja27BXSpAwnDQtZH/W1CwbQaQEEeF7tPCgSCIFyUKidMO/G49vfyr07C6gTxtZuESjzGHoFB1kgA1wHpOqn5i7aQpSKJAPJGyK0AataUOcqao2PpNs+SU67XySF/dsRuxFlJBgDQsYy37biYfclNXJNLOhc0OsC3Z/4S0CGTchU3Xv9o/Y8kc6l3xSnHNV8OdTX5Ug59zKq9EnuAKaYu7LV6H/M2Z2DpV5ac4xTS74yp8rv/mLfQ9L1lH7+b/LlbzmYx8EeO9Dd84DlN2eN8QzxLH8/PrexI2+UpAVX7asIJ8qYK4974SqBYQ/rsrGCQIm9Q=
+  -secure: "NIxposklyuwHEuoG0PsCBYzM3w8IohYz6GiBY1svhIcoIXIllWGv5AEI57LsWVnEMiSKjCj/bH+331zM+PatWOqWa+AtOTOh32qJCX37M3jimgKUalMfSLumhcS/kzCGpdI4pFNEWW5LUduMmEy0505JTizAvDcqBBp7xV63ud+JQf8FKgBZ/zifvHl1UfwQ7u3JaeknM9AaMandPwI2b94J8abK623VsLrwMpSDkmHyq4vtozPjlXzYfL8aAnWj/v/YB9DwL0Yl6thFaq97Vn5k4Bphtn4H1lWP2bFc+nQUXsutPuYLI18HpB4R3KZEZl2N8SDeZvoY+9sFkaa8ufakuXiInxyetGDMRS8VgmtKLZNqtaWQSMIVTPEXApGp149GbdCiywi7ZqvgAhZFpSauWcFNeBUxkZpt4sMhhqmV+d6bqRz6KHGxQzE6NMqJQZhnjbl2EuAT+MNYGfuSxLEvdsegPXmHmSuqnH/b5902rfzonYWkTtkh3kFW6jbJpYCQN3bNf7NNjLTWC5tKth5wDgpsWY496xR/5bpfb2WxMnNDgNrV107Dhf/acmRDeyw11Rw8A6UY6YnVXNqTB5378yx72tgjST8KP/mm84M2ghPGITXQrgWi4NObASr4k1x8bp2/zffealRckqETNwTq26ttfzr/58so3Gz4Scs="
+
