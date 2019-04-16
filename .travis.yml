@@ -1,0 +1,23 @@
+language: python
+
+env:
+    - CONDA="python=2.7"
+    - CONDA="python=3.4"
+    - CONDA="python=3.5"
+
+before_install:
+    - sudo apt-get install openssl
+    - wget http://bit.ly/miniconda -O miniconda.sh
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - conda update --yes conda
+    - travis_retry conda create --yes -n TEST $CONDA --file requirements.txt
+    - source activate TEST
+    - travis_retry conda install --yes pytest
+    - travis_retry conda install --yes -c conda-forge pyopenssl
+    - travis_retry conda install --yes -c conda-forge pycrypto
+    - travis_retry conda install --yes -c conda-forge google-api-python-client
+    - travis_retry conda install --yes -c conda-forge earthengine-api
+
+script:
+    - py.test --verbose --ignore setup.py
