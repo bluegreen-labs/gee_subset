@@ -62,6 +62,10 @@ In addition the script can be loaded as a library in a python script module by c
 
 ```python
 import gee_subset
+
+# or for the module itself
+from gee_subset import gee_subset
+
 ```
 The function is called gee_subset(). Consult the script for correct parameter naming conventions. Currently minimum error trapping is provided.
 
