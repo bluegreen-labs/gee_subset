@@ -1,23 +1,19 @@
 language: python
-
 before_install:
-  - mkdir -p ~/.config/earthengine/
-  - echo $GEE > ~/.config/earthengine/credentials
-  - sudo apt-get install openssl
-  - wget http://bit.ly/miniconda -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda update --yes conda
-  - travis_retry conda create --yes -n TEST $CONDA --file requirements.txt
-  - source activate TEST
-  - travis_retry conda install --yes -c conda-forge google-api-python-client
-  - travis_retry conda install --yes -c conda-forge earthengine-api
-  - travis_retry conda install --yes pytest
-
+- mkdir -p ~/.config/earthengine/
+- echo $GEE > ~/.config/earthengine/credentials
+- sudo apt-get install openssl
+- wget http://bit.ly/miniconda -O miniconda.sh
+- bash miniconda.sh -b -p $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- conda update --yes conda
+- travis_retry conda create --yes -n TEST $CONDA --file requirements.txt
+- source activate TEST
+- travis_retry conda install --yes -c conda-forge google-api-python-client
+- travis_retry conda install --yes -c conda-forge earthengine-api
+- travis_retry conda install --yes pytest
 script:
-  - py.test --verbose --ignore setup.py
-
+- py.test --verbose --ignore setup.py
 env:
   global:
-  -secure: "NIxposklyuwHEuoG0PsCBYzM3w8IohYz6GiBY1svhIcoIXIllWGv5AEI57LsWVnEMiSKjCj/bH+331zM+PatWOqWa+AtOTOh32qJCX37M3jimgKUalMfSLumhcS/kzCGpdI4pFNEWW5LUduMmEy0505JTizAvDcqBBp7xV63ud+JQf8FKgBZ/zifvHl1UfwQ7u3JaeknM9AaMandPwI2b94J8abK623VsLrwMpSDkmHyq4vtozPjlXzYfL8aAnWj/v/YB9DwL0Yl6thFaq97Vn5k4Bphtn4H1lWP2bFc+nQUXsutPuYLI18HpB4R3KZEZl2N8SDeZvoY+9sFkaa8ufakuXiInxyetGDMRS8VgmtKLZNqtaWQSMIVTPEXApGp149GbdCiywi7ZqvgAhZFpSauWcFNeBUxkZpt4sMhhqmV+d6bqRz6KHGxQzE6NMqJQZhnjbl2EuAT+MNYGfuSxLEvdsegPXmHmSuqnH/b5902rfzonYWkTtkh3kFW6jbJpYCQN3bNf7NNjLTWC5tKth5wDgpsWY496xR/5bpfb2WxMnNDgNrV107Dhf/acmRDeyw11Rw8A6UY6YnVXNqTB5378yx72tgjST8KP/mm84M2ghPGITXQrgWi4NObASr4k1x8bp2/zffealRckqETNwTq26ttfzr/58so3Gz4Scs="
-
+    secure: aXlRMhqGZdvWNjJl4Cgz67+8i8iQiZEp1o6SIJoLf9uT8h8sMxH/YjAHHAGAAUVdmuD5uktjhzTfpFPr5gkQOkgFLDj1zla8L3j5/xXsMZBNS2E2cPhBMYAd/CDz2zg064LdbUYGXcawPHOfdgO0XNN2W+B63zDQjXvGI/c9qVOqc2ANojzr8AAUVt6pha56t6gMmkxHjUkuN20AcsZTF2KaJy42k4IsvOgYNw3B+fyHVffKbMXOVRVyz5fyLjIE1ggk6j9QSEIv0NGNPlJTRLb+Jm5p/cS3FcCd58E9owVBIbbpXq+xxmDyhGD70BB3GdQlK/yAwMDlM/9zyEj0WK/YFLAqCkiKcn+RzZs43A0iNJFhpYMonylwgkknDc9Qa4O35jUIajdv/zQRwvqb2t2UVZo1rREWLZHTtZezmcfxd6isM9IjeZ/k7Bu4ij7FCrPCA7MDMl4bSB0ns9l7eyH4+bl5jUtp2bLqfV8lWcXZGqtOr0YPo3JJAUB7sx602LDQ66IeZOvgvRIEXUMUeiaWEdyVMATSzr4GWegTqysJKPOTyyPYj6grTmDfTMOiDnTgvmsDSW7wIgx7z88fdEXDJkCeS1HE7Kh5KbO/w3Pojvz9xtxVj+BnG/c0jf85YQ7X0PioBfWSSGudWGvhRtAnhjfAvX10jWl1mSN6JPs=
