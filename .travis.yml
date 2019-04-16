@@ -1,21 +1,22 @@
 language: python
 
-env:
-    - CONDA="python=2.7"
-    - CONDA="python=3.4"
-    - CONDA="python=3.5"
-
 before_install:
-    - sudo apt-get install openssl
-    - wget http://bit.ly/miniconda -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda update --yes conda
-    - travis_retry conda create --yes -n TEST $CONDA --file requirements.txt
-    - source activate TEST
-    - travis_retry conda install --yes -c conda-forge google-api-python-client
-    - travis_retry conda install --yes -c conda-forge earthengine-api
-    - travis_retry conda install --yes pytest
+  - mkdir -p .config/earthengine/
+  - echo $GEE > .config/earthengine/credentials
+  - sudo apt-get install openssl
+  - wget http://bit.ly/miniconda -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda update --yes conda
+  - travis_retry conda create --yes -n TEST $CONDA --file requirements.txt
+  - source activate TEST
+  - travis_retry conda install --yes -c conda-forge google-api-python-client
+  - travis_retry conda install --yes -c conda-forge earthengine-api
+  - travis_retry conda install --yes pytest
 
 script:
-    - py.test --verbose --ignore setup.py
+  - py.test --verbose --ignore setup.py
+
+env:
+  global:
+  - secure: MJaIlP8lN365/1VGzdaRir3/FxmYyNHHunth82DTckeXbL0bFOZTKq+nah4PVPrSjN1uHi/rfPblcPA6AEOTIq+90I0i2cgnxDdbUWYQevWdJZprhPI+6/rDNIIoWmz7rrjIFflabF4pWuumSL7xX6avWkZX63mSe3nyOyK39cqvgo+I1FKzgxe/PF5h4HYpQ38goK8xArXlFnSGgG96WdOC1krhy8jveNUcq13f5cgQIMvc+hGBNMJZ3m8kwkyCe19tLnjDcfs4GBi0vlQm2N49yAAhge1g0EP4ErgQ8zm77yl3QZuaoyBWQpRcU5/N/Sr/bvOGZKe5xfvEhw3BfZUQo6EjjGW+DklYoO7Ja27BXSpAwnDQtZH/W1CwbQaQEEeF7tPCgSCIFyUKidMO/G49vfyr07C6gTxtZuESjzGHoFB1kgA1wHpOqn5i7aQpSKJAPJGyK0AataUOcqao2PpNs+SU67XySF/dsRuxFlJBgDQsYy37biYfclNXJNLOhc0OsC3Z/4S0CGTchU3Xv9o/Y8kc6l3xSnHNV8OdTX5Ug59zKq9EnuAKaYu7LV6H/M2Z2DpV5ac4xTS74yp8rv/mLfQ9L1lH7+b/LlbzmYx8EeO9Dd84DlN2eN8QzxLH8/PrexI2+UpAVX7asIJ8qYK4974SqBYQ/rsrGCQIm9Q=
