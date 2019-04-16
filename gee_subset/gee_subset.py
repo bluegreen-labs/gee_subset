@@ -206,9 +206,6 @@ def gee_subset(product = None,
    # use the first list item as column names
    df.columns = region[0]
    
-   # drop id column (little value / overhead)
-   df.drop('id', axis=1, inplace=True)
-   
    # divide the time field by 1000 as in milliseconds
    # while datetime takes seconds to convert unix time
    # to dates
