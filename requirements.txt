@@ -1,5 +1,3 @@
 pandas
 pyCrypto
 pyOpenSSL
-google-api-python-client
-earthengine-api
