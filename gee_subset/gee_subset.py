@@ -15,7 +15,6 @@
 
 # load required libraries
 import os, argparse, re
-from datetime import datetime
 import pandas as pd
 import ee
 

@@ -1,3 +1,4 @@
+![](https://travis-ci.org/khufkens/gee_subset.svg?branch=master)
 [![DOI](https://zenodo.org/badge/97874563.svg)](https://zenodo.org/badge/latestdoi/97874563)
 <a href="https://www.buymeacoffee.com/H2wlgqCLO" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="21px" ></a>
 <a href="https://liberapay.com/khufkens/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg" height="21px"></a>
@@ -72,8 +73,8 @@ The function is called gee_subset(). Consult the script for correct parameter na
 When using the python module remember that the module does not support lazy loading of dependencies. You will need the start your code with:
 
 ```python
+# load required modules
 import os, re
-from datetime import datetime
 import pandas as pd
 import ee
 from gee_subset import gee_subset
