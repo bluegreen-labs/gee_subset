@@ -18,7 +18,7 @@ git clone https://github.com/khufkens/google_earth_engine_subsets.git
 or, when integrating the script in other python code by using pypi:
 
 ```bash
-sudo pip install gee_subset
+pip install gee_subset
 ```
 
 ## Use
