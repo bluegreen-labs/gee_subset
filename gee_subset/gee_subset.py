@@ -122,19 +122,19 @@ def ExportCol(col, folder, scale, region):
    # loop over all collection images
    # and export
    for i in range(0, n):
-	img = ee.Image(colList.get(i))
-	id = img.id().getInfo()
-	print(id)
-	ee.batch.Export.image.toDrive(
-	 image = img,
-	 fileNamePrefix = id,
-	 folder = folder,
-	 description = id,
-	 scale = scale,
-	 crs = 'EPSG:4326',
-	 region = region.getInfo()["coordinates"],
-	 maxPixels = 1e13,
-	 skipEmptyTiles = True).start()
+        img = ee.Image(colList.get(i))
+        id = img.id().getInfo()
+        print(id)
+        ee.batch.Export.image.toDrive(
+         image = img,
+         fileNamePrefix = id,
+         folder = folder,
+         description = id,
+         scale = scale,
+         crs = 'EPSG:4326',
+         region = region.getInfo()["coordinates"],
+         maxPixels = 1e13,
+         skipEmptyTiles = True).start()
 
 # GEE subset subroutine 
 def gee_subset(product = None,
