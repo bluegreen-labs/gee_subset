@@ -176,7 +176,7 @@ def gee_subset(product = None,
      col = ee.ImageCollection('COPERNICUS/S1_GRD').\
        filter(ee.Filter.listContains('transmitterReceiverPolarisation', sar_band)).\
        filter(ee.Filter.eq('instrumentMode', instrument)).select(bands).\
-       filter(ee.Filter.eq('resolution_meters', 10)).\
+       filter(ee.Filter.eq('resolution_meters', int(scale))).\
        filter(ee.Filter.eq('orbitProperties_pass', orbit)).\
        filterDate(start_date, end_date).filterBounds(geometry)
    else:
