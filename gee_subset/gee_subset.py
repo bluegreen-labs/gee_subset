@@ -277,7 +277,7 @@ if __name__ == "__main__":
             df.to_csv(args.directory + "/" +
              str(loc[1]) + "_" + os.path.basename(args.product) +
               "_" + "_".join(args.bands) + "_" +
-              orbit + "_gee_subset.csv", index = False)
+              args.orbit + "_gee_subset.csv", index = False)
           else:
             df.to_csv(args.directory + "/" +
              str(loc[1]) + "_" + os.path.basename(args.product) +
