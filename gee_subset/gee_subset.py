@@ -273,6 +273,14 @@ if __name__ == "__main__":
         # depending on output options write to file
         # or just print to console   
         if args.directory and not args.image:
-          df.to_csv(args.directory + "/" + str(loc[1]) + "_" + os.path.basename(args.product) + "_" + "_".join(args.bands) + "_gee_subset.csv", index = False)
+          if re.search("S1_GRD", args.product):
+            df.to_csv(args.directory + "/" +
+             str(loc[1]) + "_" + os.path.basename(args.product) +
+              "_" + "_".join(args.bands) + "_" +
+              orbit + "_gee_subset.csv", index = False)
+          else:
+            df.to_csv(args.directory + "/" +
+             str(loc[1]) + "_" + os.path.basename(args.product) +
+              "_" + "_".join(args.bands) + "_gee_subset.csv", index = False)
         else:
           print(df)
