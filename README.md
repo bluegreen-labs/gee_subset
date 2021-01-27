@@ -71,17 +71,21 @@ When using the python module remember that the module does not support lazy load
 
 ```python
 # load required modules
+# these are required and the module
+# will fail without them!
 import os, re
 import pandas as pd
+from datetime import datetime
 import ee
 from gee_subset import gee_subset
 
 # Initialize earth engine
 ee.Initialize()
 
-# your call
-gee_subset( ... )
+# your call (below a MODIS example)
+df = gee_subset(product = "MODIS/MYD09Q1", bands = ["sur_refl_b01", "sur_refl_b02"], start_date = "2015-01-01", end_date = "2015-12-31", latitude = 44, longitude = -72, scale = 30)
 
+print(df)
 ```
 
 ## Data format
