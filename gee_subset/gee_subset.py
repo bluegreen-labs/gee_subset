@@ -15,6 +15,7 @@
 
 # load required libraries
 import os, argparse, re
+from math import cos, radians
 import pandas as pd
 import ee
 
@@ -110,6 +111,15 @@ def getArgs():
    # keys being the argument names given above
    return parser.parse_args()
 
+def meters_to_lat_lon_displacement(m, origin_lat):
+    """
+    Rough calculation from meters to lat,lon to calculate buffer sizes
+    from https://gis.stackexchange.com/a/2964/96775
+    """
+    lat = m/111111
+    lon = m/(111111 * cos(radians(origin_lat)))
+    return lat, lon
+
 # export collection to individual images
 def ExportCol(col, folder, scale, region):
    
@@ -149,11 +159,8 @@ def gee_subset(product = None,
               pad = 0,
               image = None):
 
-   # fix the geometry when there is a radius
-   # 0.01 degree = 1.1132 km on equator
-   # or 0.008983 degrees per km (approximate)
    if pad > 0 :
-    pad = pad * 0.008983 
+       pad_lat, pad_lon = meters_to_lat_lon_displacement(pad*1000, origin_lat=latitude)
 
    # setup the geometry, based upon point locations as specified
    # in the locations file or provided by a latitude or longitude
@@ -162,8 +169,8 @@ def gee_subset(product = None,
    # matrix)
    if pad:
      geometry = ee.Geometry.Rectangle(
-       [longitude - pad, latitude - pad,
-       longitude + pad, latitude + pad])
+       [longitude - pad_lon, latitude - pad_lat,
+        longitude + pad_lon, latitude + pad_lat])
    else:
      geometry = ee.Geometry.Point([longitude, latitude])
    
