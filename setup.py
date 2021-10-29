@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'gee_subset',
   packages = ['gee_subset'],
-  version = '1.1.1',
+  version = '1.1.2',
   license = 'AGPL-3',
   description = 'Subset Google Earth Engine data',
   author = 'Koen Hufkens',
