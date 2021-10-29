@@ -8,7 +8,7 @@ setup(
   author = 'Koen Hufkens',
   author_email = 'koen.hufkens@gmail.com',
   url = 'https://github.com/khufkens/gee_subset',
-  download_url = 'https://github.com/khufkens/gee_subset/archive/1.1.0.tar.gz',
+  download_url = 'https://github.com/bluegreen-labs/gee_subset/archive/1.1.0.tar.gz',
   keywords = ['remote sensing','api','subsets'],
   classifiers = [
     # Status
